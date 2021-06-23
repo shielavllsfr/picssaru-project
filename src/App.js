@@ -8,15 +8,20 @@ import {
   Redirect,
 } from "react-router-dom";
 
+/* PAGES */
+import Login from "./pages/Login";
+
 export default function App() {
-  return <ThemeProvider theme={theme}>
-    <Router>
-      <Switch>
-        <Route path="/">
-        <Redirect to="/login" />
-      </Route>
-        <Route path ="/login" component = { } />
-      </Switch>
-    </Router>
-  </ThemeProvider>;
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Switch>
+          <Route path="/" exact>
+            <Redirect to="/login" />
+          </Route>
+          <Route path="/login" component={Login} />
+        </Switch>
+      </Router>
+    </ThemeProvider>
+  );
 }
