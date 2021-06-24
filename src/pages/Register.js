@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import firebase from "../utils/firebase";
+
 import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -13,7 +14,6 @@ import {
   Card,
   Button,
   Typography,
-  CircularProgress,
 } from "@material-ui/core";
 
 import { Visibility, VisibilityOff } from "@material-ui/icons";
@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
   loginForm: {
     display: "flex",
     flexDirection: "column",
+    textAlign: "center",
   },
   errormsg: {
     margin: "10px 0",
@@ -41,14 +42,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export default function Register() {
   const classes = useStyles();
 
   const [values, setValues] = useState({
     email: "",
     password: "",
+    confirmpassword: "",
     showPassword: false,
-    isLoading: false,
+    showPassword11: false,
     errors: "",
   });
 
@@ -60,46 +62,53 @@ export default function Login() {
     setValues({ ...values, showPassword: !values.showPassword });
   };
 
+  const handleClickShowPassword1 = (e) => {
+    setValues({ ...values, showPassword1: !values.showPassword1 });
+  };
+
   const handleMouseDownPassword = (e) => {
     e.preventDefault();
   };
 
-  const login = (e) => {
-    e.preventDefault();
-    setValues({ ...values, isLoading: true });
-    if (!values.email || !values.password) {
+  const register = () => {
+    if (!values.email || !values.password || !values.confirmpassword) {
+      setValues({ ...values, errors: "Please complete all fields!" });
+    } else if (values.password !== values.confirmpassword) {
+      setValues({ ...values, errors: "Passwords do not match!" });
+    } else if (
+      values.password.length < 6 ||
+      values.confirmpassword.length < 6
+    ) {
       setValues({
         ...values,
-        errors: "Please complete all fields!",
-        isLoading: false,
+        errors: "Password must be atleast 6 characters!",
       });
     } else {
+      setValues({ ...values, errors: "" });
+
       firebase
         .auth()
-        .signInWithEmailAndPassword(values.email, values.password)
+        .createUserWithEmailAndPassword(values.email, values.password)
         .then((userCredential) => {
-          setValues({ ...values, errors: " ", isLoading: false });
+          var user = userCredential.user;
+          console.log(user);
+          // ...
         })
         .catch((error) => {
-          // var errorCode = error.code;
+          //   var errorCode = error.code;
           var errorMessage = error.message;
-          setValues({ ...values, errors: errorMessage, isLoading: false });
+          // ..
+          setValues({ ...values, errors: errorMessage });
         });
     }
   };
 
-  if (values.isLoading) {
-    return (
-      <div className={classes.root}>
-        <CircularProgress color="primary" size={150} />
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       <Typography variant="h5" color="primary">
-        LOG IN
+        REGISTER
       </Typography>
+
       <Card className={classes.loginCard}>
         <form className={classes.loginForm}>
           {values.errors && (
@@ -141,22 +150,50 @@ export default function Login() {
             />
           </FormControl>
 
+          <FormControl className={classes.fields} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">
+              Confirm Password
+            </InputLabel>
+            <OutlinedInput
+              id="password"
+              type={values.showPassword1 ? "text" : "password"}
+              value={values.confirmpassword}
+              onChange={handleChange("confirmpassword")}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword1}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {values.showPassword1 ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              labelWidth={133}
+            />
+          </FormControl>
+
           <Button
             className={classes.fields}
             variant="contained"
             color="primary"
-            onClick={login}
+            onClick={register}
           >
-            LOGIN
+            REGISTER
           </Button>
+          <Typography variant="h6" color="textPrimary">
+            OR
+          </Typography>
           <Button
             className={classes.fields}
             variant="contained"
             color="default"
             component={Link}
-            to="/register"
+            to="/login"
           >
-            SIGN UP
+            SIGN IN
           </Button>
         </form>
       </Card>
