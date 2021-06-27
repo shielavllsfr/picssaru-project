@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+
 import firebase from "./utils/firebase";
 import PrivateRoute from "./router/PrivateRoute";
 import PublicRoute from "./router/PublicRoute";
@@ -19,6 +20,8 @@ import NotFound from "./pages/404";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import User from "./pages/User";
+import Profile from "./pages/Profile";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,6 +90,20 @@ export default function App() {
             isAuth={values.isAuth}
             user={values.user}
             path="/dashboard"
+          />
+
+          <PrivateRoute
+            component={User}
+            isAuth={values.isAuth}
+            user={values.user}
+            path="/user"
+          />
+
+          <PrivateRoute
+            component={Profile}
+            isAuth={values.isAuth}
+            user={values.user}
+            path="/profile"
           />
 
           <Route component={NotFound} />

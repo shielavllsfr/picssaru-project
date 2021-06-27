@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import firebase from "../utils/firebase";
-
+import { Link } from "react-router-dom";
 import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -15,7 +14,6 @@ import {
   Button,
   Typography,
 } from "@material-ui/core";
-
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
