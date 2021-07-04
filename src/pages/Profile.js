@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import firebase from "../utils/firebase";
 import Navigation from "../components/Navigation";
+import { Link } from "react-router-dom";
 
 import {
   Grid,
@@ -30,6 +31,9 @@ const useStyle = makeStyles((theme) => ({
   },
   taskDone: {
     textDecoration: "underline",
+  },
+  button: {
+    marginTop: "2.25rem !important",
   },
 }));
 
@@ -133,7 +137,15 @@ export default function Dashboard() {
   return (
     <div className="mydiv">
       <Navigation />
-
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        component={Link}
+        to="/editprofile"
+      >
+        EDIT PROFILE
+      </Button>
       <Grid container direction="column" spacing={2} alignItems="center">
         <Grid item className={classes.card}>
           <Card>
