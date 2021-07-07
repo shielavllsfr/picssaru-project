@@ -1,20 +1,21 @@
 import React from "react";
 import firebase from "../utils/firebase";
-import { fade, makeStyles } from "@material-ui/core/styles";
+import ImportImage from "../img/ImportImage";
 import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
   IconButton,
-  Typography,
+  Grid,
   InputBase,
   Badge,
+  fade,
+  makeStyles,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import HomeIcon from "@material-ui/icons/Home";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
@@ -22,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
-
   title: {
     display: "none",
     [theme.breakpoints.up("sm")]: {
@@ -71,9 +71,14 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
     },
   },
+  imageDesign: {
+    width: 200,
+    height: 70,
+    marginBottom: "-1.25rem !important",
+  },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function Navigation() {
   const classes = useStyles();
 
   const signout = () => {
@@ -92,9 +97,17 @@ export default function PrimarySearchAppBar() {
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
-            PICSSARU
-          </Typography>
+          <Grid item>
+            <Link>
+              <img
+                src={ImportImage.logo}
+                className={classes.imageDesign}
+                alt="logo"
+                component={Link}
+                to="/dashboard"
+              />
+            </Link>
+          </Grid>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -120,10 +133,6 @@ export default function PrimarySearchAppBar() {
             </IconButton>
 
             <IconButton aria-label="show 4 new mails" color="inherit">
-              <FavoriteIcon />
-            </IconButton>
-
-            <IconButton aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>
@@ -135,20 +144,11 @@ export default function PrimarySearchAppBar() {
               </Badge>
             </IconButton>
 
-            <IconButton
-              aria-label="show 4 new mails"
-              color="inherit"
-              component={Link}
-              to="/profile"
-            >
+            <IconButton color="inherit" component={Link} to="/profile">
               <AccountCircleIcon />
             </IconButton>
 
-            <IconButton
-              aria-label="show 4 new mails"
-              color="inherit"
-              onClick={signout}
-            >
+            <IconButton color="inherit" onClick={signout}>
               <ExitToAppIcon />
             </IconButton>
           </div>

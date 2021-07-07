@@ -1,6 +1,8 @@
 import React, { useState, useEffect, ref, useRef } from "react";
 import firebase from "../utils/firebase";
 import Navigation from "../components/Navigation";
+
+/* THEME */
 import PropTypes from "prop-types";
 import MuiPhoneNumber from "material-ui-phone-number";
 import {
@@ -19,11 +21,13 @@ import {
   FormControlLabel,
   Checkbox,
   Avatar,
+  Snackbar,
+  IconButton,
 } from "@material-ui/core";
+
+/* ICONS */
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
-import Snackbar from "@material-ui/core/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
 function TabPanel(props) {
@@ -252,6 +256,57 @@ export default function VerticalTabs() {
     }
   };
 
+  // CHANGE PASSWORD
+  const [values, setValues] = useState({
+    currentPassword: "",
+    new: "",
+    rpassword: "",
+  });
+
+  const handleChanges = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const reauthenticate = (currentPassword) => {
+    const user = firebase.auth().currentUser;
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      user.email,
+      values.currentPassword
+    );
+    return user.reauthenticateWithCredential(credential);
+  };
+
+  const change = (e) => {
+    e.preventDefault();
+
+    if (!values.currentPassword || !values.new || !values.rpassword) {
+      alert("Some fields is missing");
+    } else if (values.new !== values.rpassword) {
+      alert("Password do not match");
+    } else {
+      reauthenticate(values.currentPassword)
+        .then(() => {
+          const user = firebase.auth().currentUser;
+          user
+            .updatePassword(values.new)
+            .then(() => {
+              alert("Password Change Successfully");
+            })
+            .catch((error) => {
+              // An error ocurred
+              var errorMessage = error.message;
+              // ..
+              alert(errorMessage);
+              // ...
+            });
+        })
+        .catch((error) => {
+          var errorMessage = error.message;
+          alert(errorMessage);
+        });
+    }
+  };
+
   return (
     <div>
       <Navigation />
@@ -267,8 +322,7 @@ export default function VerticalTabs() {
         >
           <Tab label="Edit Profile" {...a11yProps(0)} />
           <Tab label="Change Password" {...a11yProps(1)} />
-          <Tab label="Login History" {...a11yProps(2)} />
-          <Tab label="Switch Account" {...a11yProps(3)} />
+          <Tab label="Switch Account" {...a11yProps(2)} />
         </Tabs>
         <TabPanel value={value} index={0} spacing={2}>
           <Card className={classes.card}>
@@ -455,13 +509,54 @@ export default function VerticalTabs() {
 
         <TabPanel value={value} index={1}>
           <Grid item xs container justify="center" alignItems="center">
-            CHANGE PASSWORD
+            <Grid
+              container
+              spacing={3}
+              direction="column"
+              justify="center"
+              alignItems="center"
+            >
+              <form className={classes.root} noValidate autoComplete="off">
+                <h2>Change Password</h2>
+
+                <label for="password">Old Password</label>
+                <TextField
+                  type="password"
+                  id="current"
+                  label="Old Password"
+                  onChange={handleChanges("currentPassword")}
+                  value={values.currentPassword}
+                  variant="outlined"
+                />
+                <br></br>
+                <label for="password">New Password</label>
+                <TextField
+                  type="password"
+                  id="new"
+                  label="New Password"
+                  onChange={handleChanges("new")}
+                  value={values.new}
+                  variant="outlined"
+                />
+                <br></br>
+                <label for="rpassword"> Confirm Password</label>
+                <TextField
+                  type="password"
+                  id="rpassword"
+                  label="New Password"
+                  onChange={handleChanges("rpassword")}
+                  value={values.rpassword}
+                  variant="outlined"
+                />
+                <br></br>
+                <Button variant="contained" color="primary" onClick={change}>
+                  Ok
+                </Button>
+              </form>
+            </Grid>
           </Grid>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          LOGIN HISTORY
-        </TabPanel>
-        <TabPanel value={value} index={3}>
           SWITCH ACCOUNT
         </TabPanel>
       </div>

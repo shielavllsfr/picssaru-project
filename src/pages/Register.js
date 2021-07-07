@@ -181,9 +181,6 @@ export default function Register() {
           >
             REGISTER
           </Button>
-          {/* <Typography variant="h6" color="textPrimary">
-            OR
-          </Typography> */}
           <Button
             className={classes.fields}
             variant="contained"

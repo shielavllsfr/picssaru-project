@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Navigation from "../components/Navigation";
 import firebase from "../utils/firebase";
+import ImportImage from "../img/ImportImage";
+
+/* THEME */
 import {
   makeStyles,
   Avatar,
@@ -8,21 +11,25 @@ import {
   Button,
   TextareaAutosize,
   Grid,
+  Checkbox,
+  Modal,
+  Backdrop,
+  Fade,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  CardHeader,
+  MenuItem,
+  Menu,
 } from "@material-ui/core";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
+
+/* ICONS */
 import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Typography from "@material-ui/core/Typography";
-import { auto } from "async";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import Favorite from "@material-ui/icons/Favorite";
+import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 
 export default function Dashboard() {
   const db = firebase.firestore();
@@ -31,10 +38,9 @@ export default function Dashboard() {
   const [path, setPath] = useState({ imagePath: "" });
   const [caption, setCaption] = useState({ postCaption: "" });
   const [userPost, setPost] = useState({ post_data: [] });
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const openContext = Boolean(anchorEl);
-  const options = ["Edit", "Delete"];
-  const ITEM_HEIGHT = 48;
+  const [profile, setProfile] = useState();
+  const [username, setUsername] = useState();
+  const [postRef, setPostRef] = useState();
 
   useEffect(() => {
     var user = firebase.auth().currentUser;
@@ -48,6 +54,13 @@ export default function Dashboard() {
   }, []);
 
   const useStyles = makeStyles((theme) => ({
+    root: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundImage: `url(${ImportImage.bgNewsfeed})`,
+    },
     modal: {
       display: "flex",
       alignItems: "center",
@@ -63,10 +76,22 @@ export default function Dashboard() {
       maxHeight: "60%",
       minHeight: "60%",
     },
-    root: {
+    uploadImages: {
       minWidth: "30%",
       maxWidth: "40%",
-      marginLeft: "30%",
+      marginBottom: "2%",
+      marginTop: "2%",
+    },
+    media: {
+      height: 0,
+      paddingTop: "56.25%", // 16:9
+    },
+    upload: {
+      height: "70%",
+      width: "80%",
+    },
+    box: {
+      backgroundColor: "white",
     },
   }));
 
@@ -87,9 +112,6 @@ export default function Dashboard() {
 
   const selectedImageHandler = (event) => {
     setImage(event.target.files[0]);
-
-    console.log(event.target.files[0]);
-
     if (event.target.files[0] !== undefined) {
       var file = event.target.files[0];
       let reader = new FileReader();
@@ -104,11 +126,13 @@ export default function Dashboard() {
   };
 
   const uploadHandler = () => {
-    // console.log(this.state.image);
+    console.log(image);
     let file = image;
     var storage = firebase.storage();
     var storageRef = storage.ref();
-    var uploadTask = storageRef.child("folder/" + file.name).put(file);
+    var uploadTask = storageRef
+      .child("folder/" + user.uid + " post/" + file.lastModified)
+      .put(file);
 
     uploadTask.on(
       firebase.storage.TaskEvent.STATE_CHANGED,
@@ -128,7 +152,11 @@ export default function Dashboard() {
           db.collection("users")
             .doc(firebase.auth().currentUser.uid)
             .collection("user_post")
-            .add({ imageURL: url, caption: caption })
+            .add({
+              imageURL: url,
+              caption: caption,
+              imageName: file.lastModified,
+            })
             .then(() => {
               handleClose();
             })
@@ -154,139 +182,139 @@ export default function Dashboard() {
           });
           setPost({ post_data: user_post });
         });
+
+      db.collection("users")
+        .doc(currentUser.uid)
+        .collection("profile_info")
+        .get()
+        .then((profile_info) => {
+          profile_info.forEach((user) => {
+            setProfile(user.data().info_changes.profileURL);
+            setUsername(user.data().info_changes.username);
+          });
+        });
     };
     fetchData();
   }, []);
 
-  const deletePost = (postId) => {
-    db.collection("users")
-      .doc(user.uid)
-      .collection("user_post")
-      .doc(postId)
-      .delete()
-      .then(() => {
-        //success
-        console.log("deleted");
-      })
-      .catch((error) => {
-        //error
-        console.log(error);
-      });
-  };
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleContextClick = (event) => {
     setAnchorEl(event.currentTarget);
-    if (anchorEl != null) {
-      if (event.currentTarget.tabIndex == 0) {
-        console.log("delete");
-      } else if (event.currentTarget.tabIndex == -1) {
-        //edit
-        console.log("edit");
-      }
-    }
+    setPostRef(
+      event.currentTarget.parentElement.parentElement.parentElement
+        .parentElement
+    );
   };
 
   const handleContextClose = () => {
     setAnchorEl(null);
   };
 
+  const hidePostHandler = () => {
+    console.log(postRef);
+    handleContextClose();
+    postRef.style.display = "none";
+  };
+
   return (
     <div>
       <Navigation />
-      <Button type="button" onClick={handleOpen}>
-        <Avatar alt={user.email} src="/static/images/avatar/1.jpg" />
-      </Button>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          <div className={classes.paper}>
-            <h2 id="transition-modal-title">Create New Post</h2>
-            <p id="transition-modal-description"></p>
-            <Grid>
-              <IconButton variant="contained" component="label">
-                <input type="file" hidden onChange={selectedImageHandler} />
-                <AddAPhotoIcon />
-              </IconButton>
-            </Grid>
-
-            <Grid>
-              {/* DITO MAGDIDISPLAY YUNG IUUPLOAD NA IMAGE */}
-
-              <img src={path} alt="image" height="70%" width="80%" />
-            </Grid>
-
-            <Grid>
-              <TextareaAutosize
-                rowsMax={4}
-                aria-label="maximum height"
-                placeholder="Write a Caption"
-                onChange={handleCaption}
-              />
-            </Grid>
-            <Button
-              variant="contained"
-              color="default"
-              className={classes.button}
-              startIcon={<CloudUploadIcon />}
-              onClick={uploadHandler}
-            >
-              Upload
-            </Button>
-          </div>
-        </Fade>
-      </Modal>
       <Card className={classes.root}>
+        <Button type="button" onClick={handleOpen}>
+          <Avatar alt={user.email} src={profile} />
+        </Button>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <div className={classes.paper}>
+              <h2 id="transition-modal-title">Create New Post</h2>
+              <p id="transition-modal-description"></p>
+              <Grid>
+                <IconButton variant="contained" component="label">
+                  <input type="file" hidden onChange={selectedImageHandler} />
+                  <AddAPhotoIcon />
+                </IconButton>
+              </Grid>
+
+              <Grid className={classes.box}>
+                {/* DITO MAGDIDISPLAY YUNG IUUPLOAD NA IMAGE */}
+
+                <img src={path} alt="image" className={classes.upload} />
+              </Grid>
+
+              <Grid>
+                <TextareaAutosize
+                  rowsMax={4}
+                  aria-label="maximum height"
+                  placeholder="Write a Caption"
+                  onChange={handleCaption}
+                />
+              </Grid>
+              <Button
+                variant="contained"
+                color="default"
+                className={classes.button}
+                startIcon={<CloudUploadIcon />}
+                onClick={uploadHandler}
+              >
+                Upload
+              </Button>
+            </div>
+          </Fade>
+        </Modal>
         {userPost.post_data.map((post) => (
-          <CardActionArea key={post.id}>
-            <CardMedia component="img" height="500" image={post.imageURL} />
+          <Card className={classes.uploadImages} key={post.id} id={post.id}>
+            <CardHeader
+              avatar={
+                <Avatar className={classes.avatar} src={profile}></Avatar>
+              }
+              action={
+                <Grid>
+                  <IconButton
+                    aria-label="settings"
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={handleContextClick}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleContextClose}
+                  >
+                    <MenuItem onClick={hidePostHandler}>Hide Post</MenuItem>
+                  </Menu>
+                </Grid>
+              }
+              title={username}
+            />
+            <CardMedia className={classes.media} image={post.imageURL} />
             <CardContent>
+              <Checkbox
+                icon={<FavoriteBorder />}
+                checkedIcon={<Favorite />}
+                name="checkedH"
+                color="primary"
+              />
               <Typography variant="body2" color="textSecondary" component="p">
                 {post.caption}
               </Typography>
-
-              <IconButton
-                aria-label="more"
-                aria-controls="long-menu"
-                aria-haspopup="true"
-                onClick={handleContextClick}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                id="long-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={openContext}
-                onClose={handleContextClose}
-                PaperProps={{
-                  style: {
-                    maxHeight: ITEM_HEIGHT * 4.5,
-                    width: "20ch",
-                  },
-                }}
-              >
-                {options.map((option) => (
-                  <MenuItem
-                    key={option}
-                    selected={option}
-                    onClick={handleContextClick}
-                  >
-                    {option}
-                  </MenuItem>
-                ))}
-              </Menu>
             </CardContent>
-          </CardActionArea>
+          </Card>
         ))}
       </Card>
     </div>
