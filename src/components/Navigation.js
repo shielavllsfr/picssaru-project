@@ -14,10 +14,10 @@ import {
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import HomeIcon from "@material-ui/icons/Home";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import SettingsIcon from "@material-ui/icons/Settings";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -138,14 +138,12 @@ export default function Navigation() {
               </Badge>
             </IconButton>
 
-            <IconButton aria-label="show 14 new notifications" color="inherit">
-              <Badge badgeContent={14} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-
             <IconButton color="inherit" component={Link} to="/profile">
               <AccountCircleIcon />
+            </IconButton>
+
+            <IconButton color="inherit" component={Link} to="/editprofile">
+              <SettingsIcon />
             </IconButton>
 
             <IconButton color="inherit" onClick={signout}>

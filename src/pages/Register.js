@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import firebase from "../utils/firebase";
 import { Link } from "react-router-dom";
 import { Alert } from "@material-ui/lab";
-import { makeStyles } from "@material-ui/core/styles";
+import ImportImage from "../img/ImportImage";
+
 import {
+  makeStyles,
   TextField,
   FormControl,
   OutlinedInput,
@@ -23,9 +25,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
+    backgroundImage: `url(${ImportImage.bgLogin})`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
+    backgroundSize: "cover",
   },
   loginCard: {
-    maxWidth: "300px",
+    maxWidth: "400px",
+    minWidth: "400px",
+    borderRadius: "10px",
   },
   loginForm: {
     display: "flex",
@@ -37,6 +45,11 @@ const useStyles = makeStyles((theme) => ({
   },
   fields: {
     margin: theme.spacing(1),
+  },
+  picLogo: {
+    width: 200,
+    height: 130,
+    marginLeft: "6.25rem !important",
   },
 }));
 
@@ -103,12 +116,12 @@ export default function Register() {
 
   return (
     <div className={classes.root}>
-      <Typography variant="h5" color="primary">
-        REGISTER
-      </Typography>
-
       <Card className={classes.loginCard}>
+        <img src={ImportImage.logo1} className={classes.picLogo} alt="logo" />
         <form className={classes.loginForm}>
+          <Typography variant="h5" color="primary">
+            REGISTER
+          </Typography>
           {values.errors && (
             <Alert className={classes.errormsg} severity="error">
               {values.errors}

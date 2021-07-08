@@ -30,6 +30,7 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
+import PublishIcon from "@material-ui/icons/Publish";
 
 export default function Dashboard() {
   const db = firebase.firestore();
@@ -92,6 +93,11 @@ export default function Dashboard() {
     },
     box: {
       backgroundColor: "white",
+    },
+    typo: {
+      marginTop: "2.25rem !important",
+      marginBottom: "0.25rem !important",
+      fontWeight: "bolder",
     },
   }));
 
@@ -221,8 +227,17 @@ export default function Dashboard() {
     <div>
       <Navigation />
       <Card className={classes.root}>
-        <Button type="button" onClick={handleOpen}>
-          <Avatar alt={user.email} src={profile} />
+        <Typography variant="h5" className={classes.typo}>
+          MAKE YOUR PAGE BRIGHTER, UPLOAD NOW!
+        </Typography>
+        <Button
+          type="button"
+          variant="contained"
+          color="default"
+          onClick={handleOpen}
+        >
+          <PublishIcon />
+          UPLOAD
         </Button>
         <Modal
           aria-labelledby="transition-modal-title"

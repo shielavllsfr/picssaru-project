@@ -3,6 +3,7 @@ import firebase from "../utils/firebase";
 import reactDom from "react-dom";
 import Navigation from "../components/Navigation";
 import ImportImage from "../img/ImportImage";
+
 import {
   makeStyles,
   Typography,
@@ -22,7 +23,6 @@ import {
   MenuItem,
   CardHeader,
 } from "@material-ui/core";
-
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const useStyles = makeStyles((theme) => ({
@@ -48,8 +48,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
     minWidth: "40%",
     maxWidth: "40%",
-    maxHeight: "60%",
-    minHeight: "60%",
+    maxHeight: "65%",
+    minHeight: "65%",
   },
   media: {
     height: 0,
@@ -57,11 +57,9 @@ const useStyles = makeStyles((theme) => ({
   },
   cancelButton: {
     fontWeight: "bold",
-    backgroundColor: "#ff5454",
   },
   saveButton: {
     fontWeight: "bold",
-    backgroundColor: "#57ff54",
   },
   profile: {
     display: "flex",
@@ -78,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
   },
   profInfo: {
     paddingLeft: "7%",
+  },
+  uname: {
+    marginTop: "1.25rem !important",
   },
 }));
 
@@ -268,7 +269,9 @@ export default function Album() {
           <Avatar className={classes.avatarSize} src={profile.profileURL} />
           <Grid className={classes.profInfo}>
             <Grid>
-              <Typography variant="h3">{profile.username}</Typography>
+              <Typography variant="h4" className={classes.uname}>
+                {profile.username}
+              </Typography>
             </Grid>
             <Grid>
               <Typography style={{ marginTop: "2%", maxWidth: "50%" }}>
@@ -364,6 +367,7 @@ export default function Album() {
 
                 {editState ? (
                   <Button
+                    color="secondary"
                     variant="contained"
                     className={classes.cancelButton}
                     onClick={cancelEdit}
@@ -373,9 +377,9 @@ export default function Album() {
                 ) : null}
                 {editState ? (
                   <Button
-                    g
                     disabled={saveState}
                     variant="contained"
+                    color="primary"
                     className={classes.saveButton}
                     onClick={saveEdit}
                   >
