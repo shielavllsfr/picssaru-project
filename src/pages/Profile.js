@@ -155,7 +155,7 @@ export default function Album() {
         });
     };
     fetchData();
-  }, []);
+  }, [classes.postMargin, db]);
 
   const handleImageClick = (event) => {
     setOpen(true);

@@ -18,16 +18,12 @@ import {
   CardContent,
   TextareaAutosize,
   Typography,
-  FormControlLabel,
-  Checkbox,
   Avatar,
   Snackbar,
   IconButton,
 } from "@material-ui/core";
 
 /* ICONS */
-import Favorite from "@material-ui/icons/Favorite";
-import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import CloseIcon from "@material-ui/icons/Close";
 
 function TabPanel(props) {
@@ -84,6 +80,9 @@ const useStyles = makeStyles((theme) => ({
   large: {
     width: theme.spacing(7),
     height: theme.spacing(7),
+  },
+  but: {
+    marginTop: "1.25rem !important",
   },
 }));
 
@@ -228,7 +227,7 @@ export default function VerticalTabs() {
       }
     };
     fetchData();
-  }, []);
+  }, [uid]);
 
   const [snack, setOpenSnack] = React.useState(false);
 
@@ -360,10 +359,9 @@ export default function VerticalTabs() {
               </Grid>
 
               <Grid>
-                You are using the same name on instagram and facebook. Go to the
-                facebook to change your name.
+                You can use your Facebook name.
                 <a target="_blank" href="https://facebook.com" rel="noreferrer">
-                  Change Name
+                  Check it out here.
                 </a>
               </Grid>
 
@@ -380,17 +378,11 @@ export default function VerticalTabs() {
                 </Grid>
               </Grid>
 
-              <Grid>
-                In most circumstances, you'll be able change your username back
-                to same username for another 14 days.
-                <Link href="#" variant="body2">
-                  Learn More.
-                </Link>
-              </Grid>
+              <Grid>Choose unique and awesome username.</Grid>
 
               <Grid item>
                 <Grid className={classes.grid}>
-                  Website
+                  Address
                   <TextField
                     id="filled-size-small"
                     variant="outlined"
@@ -433,7 +425,7 @@ export default function VerticalTabs() {
 
               <Grid item>
                 <Grid className={classes.grid}>
-                  Email
+                  Recovery Email
                   <TextField
                     id="filled-size-small"
                     variant="outlined"
@@ -472,34 +464,16 @@ export default function VerticalTabs() {
                   />
                 </Grid>
 
-                <Grid item container alignItems="center" spacing={4}>
+                <Grid item container alignItems="center" spacing={2}>
                   <Grid item>
-                    <Link href="#" variant="body2">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            icon={<FavoriteBorder />}
-                            checkedIcon={<Favorite />}
-                            name="checkedH"
-                            color="primary"
-                            ref={disabled}
-                          />
-                        }
-                        label="Temporarily disable my account."
-                      />
-                    </Link>
-
-                    <Grid item container alignItems="center" spacing={2}>
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={submitHandler}
-                        >
-                          SUBMIT
-                        </Button>
-                      </Grid>
-                    </Grid>
+                    <Button
+                      className={classes.but}
+                      variant="contained"
+                      color="primary"
+                      onClick={submitHandler}
+                    >
+                      SUBMIT
+                    </Button>
                   </Grid>
                 </Grid>
               </Grid>
@@ -516,9 +490,7 @@ export default function VerticalTabs() {
               justify="center"
               alignItems="center"
             >
-              <form className={classes.root} noValidate autoComplete="off">
-                <h2>Change Password</h2>
-
+              <form className={classes.root1} noValidate autoComplete="off">
                 <label for="password">Old Password</label>
                 <TextField
                   type="password"

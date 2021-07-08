@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useState, useEffect } from "react";
 import Navigation from "../components/Navigation";
 import firebase from "../utils/firebase";
@@ -201,6 +202,7 @@ export default function Dashboard() {
         });
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -263,8 +265,6 @@ export default function Dashboard() {
               </Grid>
 
               <Grid className={classes.box}>
-                {/* DITO MAGDIDISPLAY YUNG IUUPLOAD NA IMAGE */}
-
                 <img src={path} alt="image" className={classes.upload} />
               </Grid>
 
