@@ -17,6 +17,7 @@ import MailIcon from "@material-ui/icons/Mail";
 import HomeIcon from "@material-ui/icons/Home";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import SettingsIcon from "@material-ui/icons/Settings";
 
 const useStyles = makeStyles((theme) => ({
@@ -130,6 +131,10 @@ export default function Navigation() {
               to="/dashboard"
             >
               <HomeIcon />
+            </IconButton>
+
+            <IconButton color="inherit" component={Link} to="">
+              <FavoriteIcon />
             </IconButton>
 
             <IconButton aria-label="show 4 new mails" color="inherit">

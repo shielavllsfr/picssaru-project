@@ -21,10 +21,14 @@ import {
   Avatar,
   Snackbar,
   IconButton,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 
 /* ICONS */
 import CloseIcon from "@material-ui/icons/Close";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -464,16 +468,34 @@ export default function VerticalTabs() {
                   />
                 </Grid>
 
-                <Grid item container alignItems="center" spacing={2}>
+                <Grid item container alignItems="center" spacing={4}>
                   <Grid item>
-                    <Button
-                      className={classes.but}
-                      variant="contained"
-                      color="primary"
-                      onClick={submitHandler}
-                    >
-                      SUBMIT
-                    </Button>
+                    <Link href="#" variant="body2">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            icon={<FavoriteBorder />}
+                            checkedIcon={<FavoriteIcon />}
+                            name="checkedH"
+                            color="primary"
+                            ref={disabled}
+                          />
+                        }
+                        label="Temporarily disable my account."
+                      />
+                    </Link>
+                    <Grid item container alignItems="center" spacing={2}>
+                      <Grid item>
+                        <Button
+                          className={classes.but}
+                          variant="contained"
+                          color="primary"
+                          onClick={submitHandler}
+                        >
+                          SUBMIT
+                        </Button>
+                      </Grid>
+                    </Grid>{" "}
                   </Grid>
                 </Grid>
               </Grid>
