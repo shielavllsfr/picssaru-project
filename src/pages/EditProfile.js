@@ -13,8 +13,8 @@ import {
   makeStyles,
   TextField,
   Button,
-  Link,
   Card,
+  Link,
   CardContent,
   TextareaAutosize,
   Typography,
@@ -23,12 +23,17 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
 } from "@material-ui/core";
 
 /* ICONS */
 import CloseIcon from "@material-ui/icons/Close";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -88,9 +93,49 @@ const useStyles = makeStyles((theme) => ({
   but: {
     marginTop: "1.25rem !important",
   },
+  field: {
+    margin: theme.spacing(1),
+  },
+  cpCard: {
+    maxWidth: "400px",
+    minWidth: "400px",
+    borderRadius: "10px",
+    marginLeft: "5.25rem !important",
+    marginTop: "3.25rem !important",
+  },
+  cpform: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  buuuut: {
+    marginLeft: ".50rem !important",
+    marginRight: ".50rem !important",
+    marginBottom: "1.50rem !important",
+    marginTop: "1.50rem !important",
+  },
+  formm: {
+    marginTop: "1.50rem !important",
+    marginLeft: ".50rem !important",
+    marginRight: ".50rem !important",
+  },
+  card3: {
+    maxWidth: "400px",
+    minWidth: "400px",
+    borderRadius: "10px",
+    marginLeft: "5.25rem !important",
+    marginTop: "6.25rem !important",
+    paddingLeft: "2rem !important",
+    paddingTop: "2rem !important",
+    paddingRight: "2rem !important",
+    paddingBottom: "2rem !important",
+  },
+  but3: {
+    marginTop: "1rem !important",
+    marginLeft: "7.20rem !important",
+  },
 }));
 
-export default function VerticalTabs() {
+export default function EditProfile() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -264,7 +309,26 @@ export default function VerticalTabs() {
     currentPassword: "",
     new: "",
     rpassword: "",
+    showPassword: false,
+    showPassword1: false,
+    showPassword2: false,
   });
+
+  const handleClickShowPassword = (e) => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleClickShowPassword1 = (e) => {
+    setValues({ ...values, showPassword1: !values.showPassword1 });
+  };
+
+  const handleClickShowPassword2 = (e) => {
+    setValues({ ...values, showPassword2: !values.showPassword2 });
+  };
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
 
   const handleChanges = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -294,6 +358,7 @@ export default function VerticalTabs() {
             .updatePassword(values.new)
             .then(() => {
               alert("Password Change Successfully");
+              window.location.reload();
             })
             .catch((error) => {
               // An error ocurred
@@ -308,6 +373,20 @@ export default function VerticalTabs() {
           alert(errorMessage);
         });
     }
+  };
+
+  //SWITCH ACC
+
+  const signout = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        //Sign-out successful.
+      })
+      .catch((error) => {
+        //An error happened.
+      });
   };
 
   return (
@@ -495,7 +574,7 @@ export default function VerticalTabs() {
                           SUBMIT
                         </Button>
                       </Grid>
-                    </Grid>{" "}
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -512,46 +591,131 @@ export default function VerticalTabs() {
               justify="center"
               alignItems="center"
             >
-              <form className={classes.root1} noValidate autoComplete="off">
-                <label for="password">Old Password</label>
-                <TextField
-                  type="password"
-                  id="current"
-                  label="Old Password"
-                  onChange={handleChanges("currentPassword")}
-                  value={values.currentPassword}
-                  variant="outlined"
-                />
-                <br></br>
-                <label for="password">New Password</label>
-                <TextField
-                  type="password"
-                  id="new"
-                  label="New Password"
-                  onChange={handleChanges("new")}
-                  value={values.new}
-                  variant="outlined"
-                />
-                <br></br>
-                <label for="rpassword"> Confirm Password</label>
-                <TextField
-                  type="password"
-                  id="rpassword"
-                  label="New Password"
-                  onChange={handleChanges("rpassword")}
-                  value={values.rpassword}
-                  variant="outlined"
-                />
-                <br></br>
-                <Button variant="contained" color="primary" onClick={change}>
-                  Ok
-                </Button>
-              </form>
+              <Card className={classes.cpCard}>
+                <Typography variant="h6" align="center">
+                  Change Password
+                  <Typography>
+                    Become more secured while using our website.{" "}
+                  </Typography>
+                </Typography>
+                <form className={classes.cpform} noValidate autoComplete="off">
+                  <FormControl variant="outlined" className={classes.formm}>
+                    <InputLabel htmlFor="outlined-adornment-password">
+                      Old Password
+                    </InputLabel>
+                    <OutlinedInput
+                      id="current"
+                      onChange={handleChanges("currentPassword")}
+                      value={values.currentPassword}
+                      variant="outlined"
+                      type={values.showPassword ? "text" : "password"}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {values.showPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      labelWidth={100}
+                    />
+                  </FormControl>
+
+                  <FormControl variant="outlined" className={classes.formm}>
+                    <InputLabel htmlFor="new">New Password</InputLabel>
+                    <OutlinedInput
+                      id="new"
+                      onChange={handleChanges("new")}
+                      value={values.new}
+                      type={values.showPassword1 ? "text" : "password"}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword1}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {values.showPassword1 ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      labelWidth={105}
+                    />
+                  </FormControl>
+
+                  <FormControl variant="outlined" className={classes.formm}>
+                    <InputLabel htmlFor="rpassword">
+                      Confirm Password
+                    </InputLabel>
+                    <OutlinedInput
+                      id="rpassword"
+                      label="New Password"
+                      onChange={handleChanges("rpassword")}
+                      value={values.rpassword}
+                      variant="outlined"
+                      type={values.showPassword2 ? "text" : "password"}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword2}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {values.showPassword2 ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      labelWidth={125}
+                    />
+                  </FormControl>
+
+                  <Button
+                    className={classes.buuuut}
+                    variant="contained"
+                    minWidth="30px"
+                    color="primary"
+                    onClick={change}
+                  >
+                    SUBMIT
+                  </Button>
+                </form>
+              </Card>
             </Grid>
           </Grid>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          SWITCH ACCOUNT
+          <Card className={classes.card3}>
+            <Typography align="center">
+              Click the button if you want to switch an account. <br />
+              Switching account may lead to logging out of the current account.
+            </Typography>
+            <Button
+              color="primary"
+              variant="contained"
+              className={classes.but3}
+              onClick={signout}
+            >
+              SWITCH ACCOUNT
+            </Button>
+          </Card>
         </TabPanel>
       </div>
 

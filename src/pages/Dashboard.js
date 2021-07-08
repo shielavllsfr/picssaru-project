@@ -61,7 +61,10 @@ export default function Dashboard() {
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
+      height: "100vh",
       backgroundImage: `url(${ImportImage.bgNewsfeed})`,
+      backgroundPosition: "center center",
+      backgroundSize: "cover",
     },
     modal: {
       display: "flex",
@@ -99,6 +102,9 @@ export default function Dashboard() {
       marginTop: "2.25rem !important",
       marginBottom: "0.25rem !important",
       fontWeight: "bolder",
+    },
+    up: {
+      marginBottom: "2rem !important",
     },
   }));
 
@@ -233,6 +239,7 @@ export default function Dashboard() {
           MAKE YOUR PAGE BRIGHTER, UPLOAD NOW!
         </Typography>
         <Button
+          className={classes.up}
           type="button"
           variant="contained"
           color="default"

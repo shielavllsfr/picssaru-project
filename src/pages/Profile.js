@@ -27,6 +27,8 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    alignItems: "center",
+    height: "100vh",
     backgroundImage: `url(${ImportImage.bgNewsfeed})`,
   },
   postMargin: {
