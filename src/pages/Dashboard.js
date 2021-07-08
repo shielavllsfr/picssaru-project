@@ -61,8 +61,15 @@ export default function Dashboard() {
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      height: "100vh",
       backgroundImage: `url(${ImportImage.bgNewsfeed})`,
+      backgroundPosition: "center center",
+      backgroundSize: "cover",
+      border: "none",
+      boxShadow: "none",
+    },
+    divv: {
+      backgroundImage: `url(${ImportImage.divBg})`,
+      height: "100vh",
       backgroundPosition: "center center",
       backgroundSize: "cover",
     },
@@ -232,7 +239,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div>
+    <div className={classes.divv}>
       <Navigation />
       <Card className={classes.root}>
         <Typography variant="h5" className={classes.typo}>

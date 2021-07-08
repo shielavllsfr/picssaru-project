@@ -28,8 +28,18 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 const useStyles = makeStyles((theme) => ({
   root: {
     alignItems: "center",
-    height: "100vh",
     backgroundImage: `url(${ImportImage.bgNewsfeed})`,
+    backgroundRepeat: "repeat",
+    backgroundPosition: "center center",
+    backgroundSize: "cover",
+    border: "none",
+    boxShadow: "none",
+  },
+  divv: {
+    backgroundImage: `url(${ImportImage.divBg})`,
+    height: "100vh",
+    backgroundPosition: "center center",
+    backgroundSize: "cover",
   },
   postMargin: {
     marginRight: "2%",
@@ -264,134 +274,136 @@ export default function Album() {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.divv}>
       <React.Fragment>
         <Navigation />
-        <Grid className={classes.profile}>
-          <Avatar className={classes.avatarSize} src={profile.profileURL} />
-          <Grid className={classes.profInfo}>
-            <Grid>
-              <Typography variant="h4" className={classes.uname}>
-                {profile.username}
-              </Typography>
-            </Grid>
-            <Grid>
-              <Typography style={{ marginTop: "2%", maxWidth: "50%" }}>
-                {profile.bio}
-              </Typography>
+        <Card className={classes.root}>
+          <Grid className={classes.profile}>
+            <Avatar className={classes.avatarSize} src={profile.profileURL} />
+            <Grid className={classes.profInfo}>
+              <Grid>
+                <Typography variant="h4" className={classes.uname}>
+                  {profile.username}
+                </Typography>
+              </Grid>
+              <Grid>
+                <Typography style={{ marginTop: "2%", maxWidth: "50%" }}>
+                  {profile.bio}
+                </Typography>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
 
-        <main>
-          <Container>
-            <Grid className={classes.postContainer}>
-              <Grid ref={imgContainer}></Grid>
-            </Grid>
-          </Container>
-        </main>
+          <main>
+            <Container>
+              <Grid className={classes.postContainer}>
+                <Grid ref={imgContainer}></Grid>
+              </Grid>
+            </Container>
+          </main>
 
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className={classes.modal}
-          open={open}
-          onClose={handleClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <div className={classes.paper}>
-              <Card>
-                <CardHeader
-                  avatar={
-                    <Avatar
-                      className={classes.avatar}
-                      src={profile.profileURL}
-                    ></Avatar>
-                  }
-                  action={
-                    <Grid>
-                      <IconButton
-                        aria-label="settings"
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleContextClick}
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={open}>
+              <div className={classes.paper}>
+                <Card>
+                  <CardHeader
+                    avatar={
+                      <Avatar
+                        className={classes.avatar}
+                        src={profile.profileURL}
+                      ></Avatar>
+                    }
+                    action={
+                      <Grid>
+                        <IconButton
+                          aria-label="settings"
+                          aria-controls="simple-menu"
+                          aria-haspopup="true"
+                          onClick={handleContextClick}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id="simple-menu"
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={handleContextClose}
+                        >
+                          <MenuItem onClick={optionHandler} id="delete">
+                            Delete Post
+                          </MenuItem>
+                          <MenuItem onClick={optionHandler} id="edit">
+                            Edit Post
+                          </MenuItem>
+                        </Menu>
+                      </Grid>
+                    }
+                    title={profile.username}
+                  />
+                  <CardMedia
+                    className={classes.media}
+                    image={user_post.imageURL}
+                  />
+                  <CardContent>
+                    {viewState ? (
+                      <Typography
+                        ref={captionRef}
+                        variant="body2"
+                        color="textSecondary"
+                        component="p"
                       >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleContextClose}
-                      >
-                        <MenuItem onClick={optionHandler} id="delete">
-                          Delete Post
-                        </MenuItem>
-                        <MenuItem onClick={optionHandler} id="edit">
-                          Edit Post
-                        </MenuItem>
-                      </Menu>
-                    </Grid>
-                  }
-                  title={profile.username}
-                />
-                <CardMedia
-                  className={classes.media}
-                  image={user_post.imageURL}
-                />
-                <CardContent>
-                  {viewState ? (
-                    <Typography
-                      ref={captionRef}
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
+                        {user_post.caption}
+                      </Typography>
+                    ) : null}
+                    {editState ? (
+                      <TextareaAutosize
+                        rowsMax={4}
+                        aria-label="maximum height"
+                        placeholder="Write a Caption"
+                        onChange={handleCaption}
+                        value={captionValue}
+                      />
+                    ) : null}
+                  </CardContent>
+
+                  {editState ? (
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      className={classes.cancelButton}
+                      onClick={cancelEdit}
                     >
-                      {user_post.caption}
-                    </Typography>
+                      Cancel
+                    </Button>
                   ) : null}
                   {editState ? (
-                    <TextareaAutosize
-                      rowsMax={4}
-                      aria-label="maximum height"
-                      placeholder="Write a Caption"
-                      onChange={handleCaption}
-                      value={captionValue}
-                    />
+                    <Button
+                      disabled={saveState}
+                      variant="contained"
+                      color="primary"
+                      className={classes.saveButton}
+                      onClick={saveEdit}
+                    >
+                      Save
+                    </Button>
                   ) : null}
-                </CardContent>
-
-                {editState ? (
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    className={classes.cancelButton}
-                    onClick={cancelEdit}
-                  >
-                    Cancel
-                  </Button>
-                ) : null}
-                {editState ? (
-                  <Button
-                    disabled={saveState}
-                    variant="contained"
-                    color="primary"
-                    className={classes.saveButton}
-                    onClick={saveEdit}
-                  >
-                    Save
-                  </Button>
-                ) : null}
-              </Card>
-            </div>
-          </Fade>
-        </Modal>
+                </Card>
+              </div>
+            </Fade>
+          </Modal>
+        </Card>
       </React.Fragment>
     </div>
   );
