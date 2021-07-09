@@ -124,12 +124,7 @@ export default function Navigation() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton
-              aria-label="show 4 new mails"
-              color="inherit"
-              component={Link}
-              to="/dashboard"
-            >
+            <IconButton color="inherit" component={Link} to="/dashboard">
               <HomeIcon />
             </IconButton>
 
@@ -137,7 +132,7 @@ export default function Navigation() {
               <FavoriteIcon />
             </IconButton>
 
-            <IconButton aria-label="show 4 new mails" color="inherit">
+            <IconButton color="inherit" component={Link} to="/chat">
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>

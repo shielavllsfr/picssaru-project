@@ -4,6 +4,7 @@ import background from "./images/background.jpg";
 import bgLogin from "./images/bgLogin.png";
 import bgNewsfeed from "./images/bgNewsfeed.jpg";
 import divBg from "./images/divbg.png";
+import chatBg from "./images/chatBg.jpg";
 
 const images = {
   logo,
@@ -12,6 +13,7 @@ const images = {
   bgLogin,
   bgNewsfeed,
   divBg,
+  chatBg,
 };
 
 export default images;

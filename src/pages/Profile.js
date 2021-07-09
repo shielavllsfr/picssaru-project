@@ -96,7 +96,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Album() {
   const classes = useStyles();
-
   const db = firebase.firestore();
   const [profile, setProfile] = useState({
     profileURL: "",

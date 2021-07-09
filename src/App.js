@@ -23,6 +23,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import Chat from "./pages/Chat";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,6 +106,13 @@ export default function App() {
             isAuth={values.isAuth}
             user={values.user}
             path="/editprofile"
+          />
+
+          <PrivateRoute
+            component={Chat}
+            isAuth={values.isAuth}
+            user={values.user}
+            path="/chat"
           />
 
           <Route component={NotFound} />
