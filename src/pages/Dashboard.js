@@ -96,7 +96,7 @@ export default function Dashboard() {
     },
     media: {
       height: 0,
-      paddingTop: "56.25%", // 16:9
+      paddingTop: "56.25%",
     },
     upload: {
       height: "70%",
@@ -165,8 +165,6 @@ export default function Dashboard() {
         throw error;
       },
       () => {
-        // uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) =>{
-
         uploadTask.snapshot.ref.getDownloadURL().then((url) => {
           console.log(url);
           db.collection("users")

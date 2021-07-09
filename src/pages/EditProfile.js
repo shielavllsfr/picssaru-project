@@ -347,9 +347,9 @@ export default function EditProfile() {
     e.preventDefault();
 
     if (!values.currentPassword || !values.new || !values.rpassword) {
-      alert("Some fields is missing");
+      alert("Please complete all fields.");
     } else if (values.new !== values.rpassword) {
-      alert("Password do not match");
+      alert("Passwords does not match!");
     } else {
       reauthenticate(values.currentPassword)
         .then(() => {
@@ -357,15 +357,12 @@ export default function EditProfile() {
           user
             .updatePassword(values.new)
             .then(() => {
-              alert("Password Change Successfully");
+              alert("Password Changed Successfully!");
               window.location.reload();
             })
             .catch((error) => {
-              // An error ocurred
               var errorMessage = error.message;
-              // ..
               alert(errorMessage);
-              // ...
             });
         })
         .catch((error) => {
@@ -375,14 +372,13 @@ export default function EditProfile() {
     }
   };
 
-  //SWITCH ACC
-
+  //SWITCH ACCOUNT
   const signout = () => {
     firebase
       .auth()
       .signOut()
       .then(() => {
-        //Sign-out successful.
+        //Switched account successful.
       })
       .catch((error) => {
         //An error happened.

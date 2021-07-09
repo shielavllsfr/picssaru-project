@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Alert } from "@material-ui/lab";
 import ImportImage from "../img/ImportImage";
 
-/* Themes */
 import {
   makeStyles,
   TextField,
@@ -94,7 +93,6 @@ export default function Login() {
           setValues({ ...values, errors: " ", isLoading: false });
         })
         .catch((error) => {
-          // var errorCode = error.code;
           var errorMessage = error.message;
           setValues({ ...values, errors: errorMessage, isLoading: false });
         });

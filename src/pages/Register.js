@@ -103,12 +103,9 @@ export default function Register() {
         .then((userCredential) => {
           var user = userCredential.user;
           console.log(user);
-          // ...
         })
         .catch((error) => {
-          //   var errorCode = error.code;
           var errorMessage = error.message;
-          // ..
           setValues({ ...values, errors: errorMessage });
         });
     }

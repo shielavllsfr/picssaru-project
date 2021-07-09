@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import firebase from "./utils/firebase";
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,7 +7,7 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import firebase from "./utils/firebase";
+/* ROUTERS */
 import PrivateRoute from "./router/PrivateRoute";
 import PublicRoute from "./router/PublicRoute";
 
