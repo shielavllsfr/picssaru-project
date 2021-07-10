@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(5),
     color: theme.palette.getContrastText(indigo[500]),
     backgroundColor: indigo[500],
+    textTransform: "uppercase",
   },
   typs: {
     marginTop: "1.50rem !important",

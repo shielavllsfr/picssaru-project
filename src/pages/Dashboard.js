@@ -40,8 +40,6 @@ export default function Dashboard() {
   const [path, setPath] = useState({ imagePath: "" });
   const [caption, setCaption] = useState({ postCaption: "" });
   const [userPost, setPost] = useState({ post_data: [] });
-  const [profile, setProfile] = useState();
-  const [username, setUsername] = useState();
   const [postRef, setPostRef] = useState();
   const favDefIcon =
     "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z";
@@ -100,7 +98,7 @@ export default function Dashboard() {
     },
     media: {
       height: 0,
-      paddingTop: "56.25%",
+      paddingTop: "56.25%", // 16:9
     },
     upload: {
       height: "70%",
@@ -113,9 +111,6 @@ export default function Dashboard() {
       marginTop: "2.25rem !important",
       marginBottom: "0.25rem !important",
       fontWeight: "bolder",
-    },
-    up: {
-      marginBottom: "2rem !important",
     },
   }));
 
@@ -173,6 +168,7 @@ export default function Dashboard() {
 
         uploadTask.snapshot.ref.getDownloadURL().then((url) => {
           console.log(url);
+
           db.collection("users")
             .doc(firebase.auth().currentUser.uid)
             .collection("user_post")
@@ -182,6 +178,13 @@ export default function Dashboard() {
               imageName: file.lastModified,
             })
             .then(() => {
+              db.collection("users")
+                .doc(firebase.auth().currentUser.uid)
+                .set({ exists: "yes" })
+                .then(() => {
+                  console.log("asd");
+                });
+
               handleClose();
             })
             .catch((error) => {
@@ -194,29 +197,41 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchData = () => {
-      const currentUser = firebase.auth().currentUser;
+      let user_post = [];
+      setCaption("");
+      db.collection("users").onSnapshot((users) => {
+        users.forEach((user) => {
+          console.log(user.id);
 
-      db.collection("users")
-        .doc(currentUser.uid)
-        .collection("profile_info")
-        .get()
-        .then((profile_info) => {
-          profile_info.forEach((user) => {
-            setProfile(user.data().info_changes.profileURL);
-            setUsername(user.data().info_changes.username);
-          });
-        });
+          db.collection("users")
+            .doc(user.id)
+            .collection("user_post")
+            .onSnapshot((doc) => {
+              doc.forEach((post) => {
+                //console.log(post.id)
 
-      db.collection("users")
-        .doc(currentUser.uid)
-        .collection("user_post")
-        .onSnapshot((doc) => {
-          let user_post = [];
-          doc.forEach((post) => {
-            user_post.push({ ...post.data(), id: post.id });
-          });
-          setPost({ post_data: user_post });
+                db.collection("users")
+                  .doc(user.id)
+                  .collection("profile_info")
+                  .onSnapshot((profiles) => {
+                    profiles.forEach((profile) => {
+                      console.log(profile.data().info_changes.username);
+                      user_post.push({
+                        ...post.data(),
+                        id: post.id,
+                        username: profile.data().info_changes.username,
+                        profileURL: profile.data().info_changes.profileURL,
+                        user_id: user.id,
+                      });
+                    });
+
+                    setPost({ post_data: user_post });
+                    console.log(user_post);
+                  });
+              });
+            });
         });
+      });
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -245,16 +260,20 @@ export default function Dashboard() {
   const likeHandler = (event) => {
     const postId =
       event.target.parentElement.parentElement.parentElement.parentElement.id;
+    const userId =
+      event.target.parentElement.parentElement.parentElement.parentElement
+        .firstChild.id;
     const postCollection = firebase
       .firestore()
       .collection("users")
-      .doc(user.uid)
+      .doc(userId)
       .collection("user_post");
     const likedCollection = firebase
       .firestore()
       .collection("users")
       .doc(user.uid)
       .collection("liked_post");
+    console.log(userId);
     if (event.target.checked) {
       postCollection
         .doc(postId)
@@ -264,6 +283,7 @@ export default function Dashboard() {
             postId: postId,
             imageURL: postData.data().imageURL,
             caption: postData.data().caption,
+            userId: userId,
           };
           likedCollection.add(likedPost);
           console.log("liked");
@@ -291,9 +311,6 @@ export default function Dashboard() {
         .children[2].firstChild.firstChild.firstChild;
     const postCard =
       event.target.parentElement.parentElement.parentElement.parentElement;
-    console.dir(
-      postCard.children[2].firstChild.firstChild.lastChild.firstChild
-    );
     firebase
       .firestore()
       .collection("users")
@@ -319,17 +336,16 @@ export default function Dashboard() {
       <Navigation />
       <Card className={classes.root}>
         <Typography variant="h5" className={classes.typo}>
-          MAKE YOUR PAGE BRIGHTER, UPLOAD NOW!
+          MAKE OUR WORLD BRIGHTER!
         </Typography>
         <Button
           type="button"
           variant="contained"
           color="default"
           onClick={handleOpen}
-          className={classes.up}
         >
           <PublishIcon />
-          UPLOAD
+          UPLOAD NOW
         </Button>
         <Modal
           aria-labelledby="transition-modal-title"
@@ -386,8 +402,12 @@ export default function Dashboard() {
             onLoad={setFavState}
           >
             <CardHeader
+              id={post.user_id}
               avatar={
-                <Avatar className={classes.avatar} src={profile}></Avatar>
+                <Avatar
+                  className={classes.avatar}
+                  src={post.profileURL}
+                ></Avatar>
               }
               action={
                 <Grid>
@@ -410,7 +430,7 @@ export default function Dashboard() {
                   </Menu>
                 </Grid>
               }
-              title={username}
+              title={post.username}
             />
             <CardMedia className={classes.media} image={post.imageURL} />
             <CardContent>

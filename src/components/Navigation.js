@@ -128,14 +128,12 @@ export default function Navigation() {
               <HomeIcon />
             </IconButton>
 
-            <IconButton color="inherit" component={Link} to="">
+            <IconButton color="inherit" component={Link} to="/favorites">
               <FavoriteIcon />
             </IconButton>
 
             <IconButton color="inherit" component={Link} to="/chat">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
+              <MailIcon />
             </IconButton>
 
             <IconButton color="inherit" component={Link} to="/profile">

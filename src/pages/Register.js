@@ -102,10 +102,38 @@ export default function Register() {
         .createUserWithEmailAndPassword(values.email, values.password)
         .then((userCredential) => {
           var user = userCredential.user;
-          console.log(user);
+          console.log(user.uid);
+
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(user.uid)
+            .set({ exists: "yes" })
+            .then(() => {
+              const info_changes = {
+                profileURL: "",
+                name: "",
+                username: "",
+                website: "",
+                bio: "",
+                email: "",
+                mobile: "",
+                gender: "",
+              };
+
+              firebase
+                .firestore()
+                .collection("users")
+                .doc(user.uid)
+                .collection("profile_info")
+                .add({ info_changes });
+            });
+          // ...
         })
         .catch((error) => {
+          //   var errorCode = error.code;
           var errorMessage = error.message;
+          // ..
           setValues({ ...values, errors: errorMessage });
         });
     }
