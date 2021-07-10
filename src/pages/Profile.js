@@ -97,11 +97,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Album() {
   const classes = useStyles();
   const db = firebase.firestore();
+
   const [profile, setProfile] = useState({
     profileURL: "",
     username: "",
     bio: "",
   });
+
   const imgContainer = useRef();
   const [open, setOpen] = React.useState(false);
   const [user_post, setUserPost] = useState({
@@ -110,6 +112,7 @@ export default function Album() {
     caption: "",
     id: "",
   });
+
   const [user, setUser] = useState();
   const captionRef = useRef();
   const [saveState, setSaveState] = useState(false);
@@ -205,7 +208,6 @@ export default function Album() {
     if (event.target.id === "delete") {
       //delete
       console.log("delete post");
-
       firestore
         .collection("users")
         .doc(user)
@@ -265,7 +267,8 @@ export default function Album() {
       .update({ caption: captionValue })
       .then((res) => {
         selectedImage.name = captionValue;
-        console.log("updated");
+        alert("Successfully Updated!");
+        handleClose();
       })
       .catch((err) => {
         console.log(err);

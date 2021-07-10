@@ -7,11 +7,9 @@ import {
   Toolbar,
   IconButton,
   Grid,
-  InputBase,
   fade,
   makeStyles,
 } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
 import MailIcon from "@material-ui/icons/Mail";
 import HomeIcon from "@material-ui/icons/Home";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
@@ -98,29 +96,13 @@ export default function Navigation() {
       <AppBar position="static">
         <Toolbar>
           <Grid item>
-            <Link>
-              <img
-                src={ImportImage.logo}
-                className={classes.imageDesign}
-                alt="logo"
-                component={Link}
-                to="/dashboard"
-              />
-            </Link>
-          </Grid>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
+            <img
+              src={ImportImage.logo}
+              className={classes.imageDesign}
+              alt="logo"
             />
-          </div>
+          </Grid>
+
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton color="inherit" component={Link} to="/dashboard">

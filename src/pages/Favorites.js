@@ -24,12 +24,17 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
     backgroundImage: `url(${ImportImage.bgNewsfeed})`,
     backgroundPosition: "center center",
+    backgroundSize: "cover",
+    border: "none",
+    boxShadow: "none",
+  },
+  root1: {
+    backgroundImage: `url(${ImportImage.divBg})`,
+    backgroundPosition: "center center",
+    backgroundSize: "cover",
+    height: "100vh",
   },
   postMargin: {
     marginRight: "2%",
@@ -42,6 +47,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    maxHeight: "105%",
+    minHeight: "105%",
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
@@ -55,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 0,
-    paddingTop: "56.25%", // 16:9
+    paddingTop: "56.25%",
   },
   cancelButton: {
     fontWeight: "bold",
@@ -83,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "1.25rem !important",
   },
   ty: {
-    marginTop: "2.25rem !important",
+    paddingTop: "2.25rem !important",
   },
 }));
 
@@ -206,12 +213,11 @@ export default function Album() {
   };
 
   return (
-    <div>
+    <div className={classes.root1}>
       <Navigation />
       <div className={classes.root}>
-        <Typography className={classes.ty} variant="h4">
-          {" "}
-          MY FAVORITES{" "}
+        <Typography align="center" className={classes.ty} variant="h4">
+          MY FAVORITES
         </Typography>
         <React.Fragment>
           <main>

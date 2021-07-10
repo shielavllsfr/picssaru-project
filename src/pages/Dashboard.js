@@ -79,6 +79,8 @@ export default function Dashboard() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      maxHeight: "107%",
+      minHeight: "107%",
     },
     paper: {
       backgroundColor: theme.palette.background.paper,
@@ -98,7 +100,7 @@ export default function Dashboard() {
     },
     media: {
       height: 0,
-      paddingTop: "56.25%", // 16:9
+      paddingTop: "56.25%",
     },
     upload: {
       height: "70%",
@@ -111,6 +113,9 @@ export default function Dashboard() {
       marginTop: "2.25rem !important",
       marginBottom: "0.25rem !important",
       fontWeight: "bolder",
+    },
+    but: {
+      marginBottom: "2rem !important",
     },
   }));
 
@@ -164,8 +169,6 @@ export default function Dashboard() {
         throw error;
       },
       () => {
-        // uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) =>{
-
         uploadTask.snapshot.ref.getDownloadURL().then((url) => {
           console.log(url);
 
@@ -183,6 +186,7 @@ export default function Dashboard() {
                 .set({ exists: "yes" })
                 .then(() => {
                   console.log("asd");
+                  window.location.reload();
                 });
 
               handleClose();
@@ -208,8 +212,6 @@ export default function Dashboard() {
             .collection("user_post")
             .onSnapshot((doc) => {
               doc.forEach((post) => {
-                //console.log(post.id)
-
                 db.collection("users")
                   .doc(user.id)
                   .collection("profile_info")
@@ -224,9 +226,7 @@ export default function Dashboard() {
                         user_id: user.id,
                       });
                     });
-
                     setPost({ post_data: user_post });
-                    console.log(user_post);
                   });
               });
             });
@@ -263,17 +263,19 @@ export default function Dashboard() {
     const userId =
       event.target.parentElement.parentElement.parentElement.parentElement
         .firstChild.id;
+
     const postCollection = firebase
       .firestore()
       .collection("users")
       .doc(userId)
       .collection("user_post");
+
     const likedCollection = firebase
       .firestore()
       .collection("users")
       .doc(user.uid)
       .collection("liked_post");
-    console.log(userId);
+
     if (event.target.checked) {
       postCollection
         .doc(postId)
@@ -286,7 +288,7 @@ export default function Dashboard() {
             userId: userId,
           };
           likedCollection.add(likedPost);
-          console.log("liked");
+
           event.target.parentElement.lastChild.firstChild.attributes[0].value =
             favLikedIcon;
           event.target.parentElement.lastChild.firstChild.style.fill = "red";
@@ -343,6 +345,7 @@ export default function Dashboard() {
           variant="contained"
           color="default"
           onClick={handleOpen}
+          className={classes.but}
         >
           <PublishIcon />
           UPLOAD NOW

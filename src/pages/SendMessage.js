@@ -31,6 +31,7 @@ export default function SendMessage({ scroll }) {
     var user = firebase.auth().currentUser;
     if (user) {
       setUser(user);
+      console.log(user);
     } else {
     }
   }, []);
