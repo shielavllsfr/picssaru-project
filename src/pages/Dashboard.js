@@ -179,6 +179,7 @@ export default function Dashboard() {
               imageURL: url,
               caption: caption,
               imageName: file.lastModified,
+              created_at: new Date(),
             })
             .then(() => {
               db.collection("users")
@@ -210,6 +211,7 @@ export default function Dashboard() {
           db.collection("users")
             .doc(user.id)
             .collection("user_post")
+            .orderBy("created_at", "desc")
             .onSnapshot((doc) => {
               doc.forEach((post) => {
                 db.collection("users")
