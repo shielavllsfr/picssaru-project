@@ -8,7 +8,6 @@ import {
   IconButton,
   Grid,
   InputBase,
-  Badge,
   fade,
   makeStyles,
 } from "@material-ui/core";
