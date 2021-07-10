@@ -91,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
   ty: {
     paddingTop: "2.25rem !important",
+    paddingBottom: "2.25rem !important",
   },
 }));
 
