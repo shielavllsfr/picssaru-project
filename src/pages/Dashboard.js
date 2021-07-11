@@ -95,8 +95,8 @@ export default function Dashboard() {
       minHeight: "60%",
     },
     uploadImages: {
-      minWidth: "30%",
-      maxWidth: "40%",
+      minWidth: "60%",
+      maxWidth: "60%",
       marginBottom: "2%",
       marginTop: "2%",
     },
@@ -118,6 +118,29 @@ export default function Dashboard() {
     },
     but: {
       marginBottom: "2rem !important",
+    },
+    cardComment: {
+      alignItems: "left",
+      textTransform: "lowercase",
+      textAlign: "left",
+      justifyItems: "left",
+      border: "none",
+      boxShadow: "none",
+    },
+    txtAdd: {
+      alignItems: "left",
+      textTransform: "lowercase",
+      textAlign: "left",
+      justifyItems: "left",
+    },
+    comAdd: {
+      marginTop: "1.25rem !important",
+      width: "650px",
+    },
+    comAdd1: {
+      marginTop: ".70rem !important",
+      width: "95px",
+      height: "55px",
     },
   }));
 
@@ -202,8 +225,6 @@ export default function Dashboard() {
     );
   };
 
-  /////////////////////
-
   const [profile, setProfile] = useState({
     username: "",
   });
@@ -220,7 +241,6 @@ export default function Dashboard() {
             .orderBy("created_at", "desc")
             .onSnapshot((doc) => {
               doc.forEach((post) => {
-                //the array that will contain all the comments registered to a post
                 let post_comment = [];
 
                 db.collection("users")
@@ -228,9 +248,9 @@ export default function Dashboard() {
                   .collection("user_post")
                   .doc(post.id)
                   .collection("comments")
+                  .orderBy("created_at", "asc")
                   .get()
                   .then((comments) => {
-                    //retrieves all the comments registered to the specified post and saves that data into "post_comment" array
                     comments.forEach((comment) => {
                       post_comment.push({
                         user_comment: comment.data().comment,
@@ -238,7 +258,6 @@ export default function Dashboard() {
                       });
                     });
                   });
-                //after retrieving the comments, proceeds to retrieve the post OWNER profile info
                 db.collection("users")
                   .doc(user.id)
                   .collection("profile_info")
@@ -259,7 +278,6 @@ export default function Dashboard() {
             });
         });
       });
-      /////////////////////
       const currentUser = firebase.auth().currentUser;
 
       db.collection("users")
@@ -374,14 +392,12 @@ export default function Dashboard() {
       });
   };
 
-  //the payload thingy that was already in the comment when i got it
   const [payload, setPayload] = useState({
     task: "",
   });
 
   const addTask = (event) => {
     console.log(userPost.post_data);
-    //gets the object/<div> reference on the clicked post on
     const postId =
       event.target.parentElement.parentElement.parentElement.parentElement
         .parentElement.parentElement.parentElement;
@@ -397,7 +413,6 @@ export default function Dashboard() {
 
     let postComments = [];
 
-    //the comments are saved inside the collection named "comments" that can be found to every post that has a comment registered to them
     db.collection("users")
       .doc(userId.id)
       .collection("user_post")
@@ -411,15 +426,9 @@ export default function Dashboard() {
         username: profile.username,
       })
       .then((docRef) => {
-        //success
         console.log("saved");
         commentInputRef.value = "";
 
-        //gets all the current comments inside the comments container to be rerendered
-        //why? because if i only render the new comment it will replace every existing comment
-        //(e.g. i commented on a post that has 3 other comments, all those 3 comments will be gone and
-        //get replaced by the comment i made)
-        //the for loop is use to re-create the object of all the current comment in the post
         for (let i = 0; i < commentContainerRef.children.length; i++) {
           const newComment = (
             <Typography variant="h6" component={Button}>
@@ -432,8 +441,6 @@ export default function Dashboard() {
           postComments.push(newComment);
         }
 
-        //after re-creating the current comments, proceed to CREAT the object of the new comment and push
-        //in into the array that will be rendered
         postComments.push(
           <Typography variant="h6" component={Button}>
             {payload.task}
@@ -456,7 +463,7 @@ export default function Dashboard() {
       <Navigation />
       <Card className={classes.root}>
         <Typography variant="h5" className={classes.typo}>
-          MAKE OUR WORLD BRIGHTER!
+          MAKE YOUR WORLD BRIGHTER!
         </Typography>
         <Button
           type="button"
@@ -565,37 +572,37 @@ export default function Dashboard() {
               <Typography variant="body2" color="textSecondary" component="p">
                 {post.caption}
               </Typography>
-              <Card>
+              <Card className={classes.cardComment}>
                 <CardContent>
                   <Grid
                     container
                     direction="column"
-                    alignItems="center"
-                    justify="center"
+                    alignItems="left"
+                    justify="left"
                   >
                     {post.comments.map((comment) => (
                       <React.Fragment>
-                        <Grid container justify="center" alignItems="center">
-                          <Typography variant="h6" component={Button}>
+                        <Grid container className={classes.txtAdd}>
+                          <Typography
+                            className={classes.txtAdd}
+                            component={Button}
+                          >
                             {comment.username}: {comment.user_comment}
                           </Typography>
                         </Grid>
                       </React.Fragment>
                     ))}
                   </Grid>
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="center"
-                    justify="center"
-                  >
+                  <Grid container spacing={2}>
                     <TextField
                       variant="outlined"
-                      label="Comments"
+                      placeholder="Add Comment...."
                       onChange={handleChange}
+                      className={classes.comAdd}
                     />
                     <Grid item>
                       <Button
+                        className={classes.comAdd1}
                         variant="contained"
                         color="primary"
                         onClick={addTask}

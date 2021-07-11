@@ -25,7 +25,6 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Chat from "./pages/Chat";
 import Favorites from "./pages/Favorites";
-import Comments from "./pages/Comments";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,13 +121,6 @@ export default function App() {
             isAuth={values.isAuth}
             user={values.user}
             path="/favorites"
-          />
-
-          <PrivateRoute
-            component={Comments}
-            isAuth={values.isAuth}
-            user={values.user}
-            path="/comment"
           />
 
           <Route component={NotFound} />
