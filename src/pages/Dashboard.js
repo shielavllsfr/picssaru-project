@@ -23,6 +23,7 @@ import {
   CardHeader,
   MenuItem,
   Menu,
+  TextField,
 } from "@material-ui/core";
 
 /* ICONS */
@@ -32,6 +33,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 import PublishIcon from "@material-ui/icons/Publish";
+import reactDom from "react-dom";
 
 export default function Dashboard() {
   const db = firebase.firestore();
@@ -200,32 +202,55 @@ export default function Dashboard() {
     );
   };
 
+  /////////////////////
+
+  const [profile, setProfile] = useState({
+    username: "",
+  });
+
   useEffect(() => {
     const fetchData = () => {
       let user_post = [];
       setCaption("");
       db.collection("users").onSnapshot((users) => {
         users.forEach((user) => {
-          console.log(user.id);
-
           db.collection("users")
             .doc(user.id)
             .collection("user_post")
             .orderBy("created_at", "desc")
             .onSnapshot((doc) => {
               doc.forEach((post) => {
+                //the array that will contain all the comments registered to a post
+                let post_comment = [];
+
+                db.collection("users")
+                  .doc(user.id)
+                  .collection("user_post")
+                  .doc(post.id)
+                  .collection("comments")
+                  .get()
+                  .then((comments) => {
+                    //retrieves all the comments registered to the specified post and saves that data into "post_comment" array
+                    comments.forEach((comment) => {
+                      post_comment.push({
+                        user_comment: comment.data().comment,
+                        username: comment.data().username,
+                      });
+                    });
+                  });
+                //after retrieving the comments, proceeds to retrieve the post OWNER profile info
                 db.collection("users")
                   .doc(user.id)
                   .collection("profile_info")
                   .onSnapshot((profiles) => {
                     profiles.forEach((profile) => {
-                      console.log(profile.data().info_changes.username);
                       user_post.push({
                         ...post.data(),
                         id: post.id,
                         username: profile.data().info_changes.username,
                         profileURL: profile.data().info_changes.profileURL,
                         user_id: user.id,
+                        comments: post_comment,
                       });
                     });
                     setPost({ post_data: user_post });
@@ -234,6 +259,20 @@ export default function Dashboard() {
             });
         });
       });
+      /////////////////////
+      const currentUser = firebase.auth().currentUser;
+
+      db.collection("users")
+        .doc(currentUser.uid)
+        .collection("profile_info")
+        .get()
+        .then((profile_info) => {
+          profile_info.forEach((user) => {
+            setProfile({
+              username: user.data().info_changes.username,
+            });
+          });
+        });
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -333,6 +372,83 @@ export default function Dashboard() {
           }
         });
       });
+  };
+
+  //the payload thingy that was already in the comment when i got it
+  const [payload, setPayload] = useState({
+    task: "",
+  });
+
+  const addTask = (event) => {
+    console.log(userPost.post_data);
+    //gets the object/<div> reference on the clicked post on
+    const postId =
+      event.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.parentElement;
+    const userId = postId.firstChild;
+    const commentInputRef =
+      event.target.parentElement.parentElement.parentElement.firstChild
+        .lastChild.firstChild;
+    const commentContainerRef =
+      event.target.parentElement.parentElement.parentElement.parentElement
+        .firstChild;
+
+    console.log(commentInputRef);
+
+    let postComments = [];
+
+    //the comments are saved inside the collection named "comments" that can be found to every post that has a comment registered to them
+    db.collection("users")
+      .doc(userId.id)
+      .collection("user_post")
+      .doc(postId.id)
+      .collection("comments")
+      .add({
+        comment: payload.task,
+        created_at: new Date(),
+        postId: postId.id,
+        userId: userId.id,
+        username: profile.username,
+      })
+      .then((docRef) => {
+        //success
+        console.log("saved");
+        commentInputRef.value = "";
+
+        //gets all the current comments inside the comments container to be rerendered
+        //why? because if i only render the new comment it will replace every existing comment
+        //(e.g. i commented on a post that has 3 other comments, all those 3 comments will be gone and
+        //get replaced by the comment i made)
+        //the for loop is use to re-create the object of all the current comment in the post
+        for (let i = 0; i < commentContainerRef.children.length; i++) {
+          const newComment = (
+            <Typography variant="h6" component={Button}>
+              {
+                commentContainerRef.children[i].firstChild.firstChild
+                  .textContent
+              }
+            </Typography>
+          );
+          postComments.push(newComment);
+        }
+
+        //after re-creating the current comments, proceed to CREAT the object of the new comment and push
+        //in into the array that will be rendered
+        postComments.push(
+          <Typography variant="h6" component={Button}>
+            {payload.task}
+          </Typography>
+        );
+        console.log("aa");
+        reactDom.render(postComments, commentContainerRef);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleChange = (e) => {
+    setPayload({ task: e.target.value });
   };
 
   return (
@@ -449,6 +565,47 @@ export default function Dashboard() {
               <Typography variant="body2" color="textSecondary" component="p">
                 {post.caption}
               </Typography>
+              <Card>
+                <CardContent>
+                  <Grid
+                    container
+                    direction="column"
+                    alignItems="center"
+                    justify="center"
+                  >
+                    {post.comments.map((comment) => (
+                      <React.Fragment>
+                        <Grid container justify="center" alignItems="center">
+                          <Typography variant="h6" component={Button}>
+                            {comment.username}: {comment.user_comment}
+                          </Typography>
+                        </Grid>
+                      </React.Fragment>
+                    ))}
+                  </Grid>
+                  <Grid
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    justify="center"
+                  >
+                    <TextField
+                      variant="outlined"
+                      label="Comments"
+                      onChange={handleChange}
+                    />
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={addTask}
+                      >
+                        ADD
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
         ))}
