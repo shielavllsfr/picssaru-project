@@ -449,6 +449,7 @@ export default function EditProfile() {
                 <Grid className={classes.grid}>
                   Username
                   <TextField
+                    disabled
                     id="filled-size-small"
                     variant="outlined"
                     size="small"
@@ -457,9 +458,6 @@ export default function EditProfile() {
                   />
                 </Grid>
               </Grid>
-
-              <Grid>Choose unique and awesome username.</Grid>
-
               <Grid item>
                 <Grid className={classes.grid}>
                   Address

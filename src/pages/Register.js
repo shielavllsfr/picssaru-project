@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "10px 0",
   },
   fields: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0.75),
   },
   picLogo: {
     width: 200,
@@ -59,6 +59,8 @@ export default function Register() {
   const [values, setValues] = useState({
     email: "",
     password: "",
+    username: "",
+    name: "",
     confirmpassword: "",
     showPassword: false,
     showPassword11: false,
@@ -112,8 +114,8 @@ export default function Register() {
             .then(() => {
               const info_changes = {
                 profileURL: "",
-                name: "",
-                username: "",
+                name: values.name,
+                username: values.username,
                 website: "",
                 bio: "",
                 email: "",
@@ -152,6 +154,22 @@ export default function Register() {
               {values.errors}
             </Alert>
           )}
+          <TextField
+            className={classes.fields}
+            id="username"
+            label="username"
+            variant="outlined"
+            value={values.username}
+            onChange={handleChange("username")}
+          />
+          <TextField
+            className={classes.fields}
+            id="name"
+            label="Full Name"
+            variant="outlined"
+            value={values.name}
+            onChange={handleChange("name")}
+          />
           <TextField
             className={classes.fields}
             id="email"

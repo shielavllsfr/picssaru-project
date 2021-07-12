@@ -115,9 +115,11 @@ export default function Dashboard() {
       marginTop: "2.25rem !important",
       marginBottom: "0.25rem !important",
       fontWeight: "bolder",
+      textAlign: "center",
     },
     but: {
       marginBottom: "2rem !important",
+      marginLeft: "21rem !important",
     },
     cardComment: {
       alignItems: "left",
@@ -141,6 +143,12 @@ export default function Dashboard() {
       marginTop: ".70rem !important",
       width: "95px",
       height: "55px",
+    },
+    uploadcard: {
+      marginTop: "1.70rem !important",
+      width: "805px",
+      justifyContent: "center",
+      alignItems: "center",
     },
   }));
 
@@ -462,19 +470,21 @@ export default function Dashboard() {
     <div className={classes.divv}>
       <Navigation />
       <Card className={classes.root}>
-        <Typography variant="h5" className={classes.typo}>
-          MAKE YOUR WORLD BRIGHTER!
-        </Typography>
-        <Button
-          type="button"
-          variant="contained"
-          color="default"
-          onClick={handleOpen}
-          className={classes.but}
-        >
-          <PublishIcon />
-          UPLOAD NOW
-        </Button>
+        <Card className={classes.uploadcard}>
+          <Typography variant="h5" className={classes.typo}>
+            MAKE YOUR WORLD BRIGHTER!
+          </Typography>
+          <Button
+            type="button"
+            variant="contained"
+            color="primary"
+            onClick={handleOpen}
+            className={classes.but}
+          >
+            <PublishIcon />
+            POST NOW
+          </Button>
+        </Card>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"

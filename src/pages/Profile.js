@@ -121,6 +121,17 @@ export default function Album() {
   const [captionValue, setCaptionValue] = useState();
   const [selectedImage, setSelectedImage] = useState();
 
+  const [user1, setUser1] = useState({ email: "" });
+
+  useEffect(() => {
+    var user1 = firebase.auth().currentUser;
+    if (user1) {
+      setUser1(user1);
+      console.log(user1);
+    } else {
+    }
+  }, []);
+
   useEffect(() => {
     const fetchData = () => {
       const currentUser = firebase.auth().currentUser;
@@ -289,6 +300,12 @@ export default function Album() {
                 </Typography>
               </Grid>
               <Grid>
+                <Grid>
+                  <Typography className={classes.uname}>
+                    {user1.email}
+                  </Typography>
+                </Grid>
+                <Grid></Grid>
                 <Typography style={{ marginTop: "2%", maxWidth: "50%" }}>
                   {profile.bio}
                 </Typography>
