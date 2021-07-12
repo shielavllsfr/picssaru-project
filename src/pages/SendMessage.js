@@ -61,7 +61,7 @@ export default function SendMessage({ scroll }) {
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
               className={classes.txtbox}
-              placeholder="Enter you message..."
+              placeholder="Enter your message..."
             />
             <Button
               className={classes.butt}

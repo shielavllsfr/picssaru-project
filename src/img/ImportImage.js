@@ -3,7 +3,7 @@ import logo1 from "./images/piclogo.png";
 import background from "./images/background.jpg";
 import bgLogin from "./images/bgLogin.png";
 import bgNewsfeed from "./images/bgNewsfeed.jpg";
-import divBg from "./images/divbg.png";
+import divBg from "./images/divbg.jpg";
 import chatBg from "./images/chatBg.jpg";
 
 const images = {

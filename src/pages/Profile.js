@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import firebase from "../utils/firebase";
 import reactDom from "react-dom";
 import Navigation from "../components/Navigation";
-import ImportImage from "../img/ImportImage";
 
 import {
   makeStyles,
@@ -28,18 +27,11 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 const useStyles = makeStyles((theme) => ({
   root: {
     alignItems: "center",
-    backgroundImage: `url(${ImportImage.bgNewsfeed})`,
-    backgroundRepeat: "repeat",
-    backgroundPosition: "center center",
-    backgroundSize: "cover",
     border: "none",
     boxShadow: "none",
   },
   divv: {
-    backgroundImage: `url(${ImportImage.divBg})`,
     height: "100vh",
-    backgroundPosition: "center center",
-    backgroundSize: "cover",
   },
   postMargin: {
     marginRight: "2%",
@@ -60,8 +52,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
     minWidth: "40%",
     maxWidth: "40%",
-    maxHeight: "65%",
-    minHeight: "65%",
+    maxHeight: "70%",
+    minHeight: "70%",
   },
   media: {
     height: 0,

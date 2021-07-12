@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import firebase from "../utils/firebase";
 import reactDom from "react-dom";
 import Navigation from "../components/Navigation";
-import ImportImage from "../img/ImportImage";
 import Favorite from "@material-ui/icons/Favorite";
 import FavoriteBorder from "@material-ui/icons/FavoriteBorder";
 
@@ -24,14 +23,10 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundImage: `url(${ImportImage.bgNewsfeed})`,
-    backgroundPosition: "center center",
-    backgroundSize: "cover",
     border: "none",
     boxShadow: "none",
   },
   root1: {
-    backgroundImage: `url(${ImportImage.divBg})`,
     backgroundPosition: "center center",
     backgroundSize: "cover",
     height: "100vh",
@@ -47,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    maxHeight: "105%",
-    minHeight: "105%",
+    maxHeight: "110%",
+    minHeight: "110%",
   },
   paper: {
     backgroundColor: theme.palette.background.paper,

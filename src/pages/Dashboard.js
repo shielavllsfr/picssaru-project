@@ -71,12 +71,6 @@ export default function Dashboard() {
       border: "none",
       boxShadow: "none",
     },
-    divv: {
-      backgroundImage: `url(${ImportImage.divBg})`,
-      height: "100vh",
-      backgroundPosition: "center center",
-      backgroundSize: "cover",
-    },
     modal: {
       display: "flex",
       alignItems: "center",
@@ -134,6 +128,7 @@ export default function Dashboard() {
       textTransform: "lowercase",
       textAlign: "left",
       justifyItems: "left",
+      fontSize: "13px",
     },
     comAdd: {
       marginTop: "1.25rem !important",
@@ -149,6 +144,7 @@ export default function Dashboard() {
       width: "805px",
       justifyContent: "center",
       alignItems: "center",
+      marginBottom: "1.70rem !important",
     },
   }));
 
@@ -417,8 +413,6 @@ export default function Dashboard() {
       event.target.parentElement.parentElement.parentElement.parentElement
         .firstChild;
 
-    console.log(commentInputRef);
-
     let postComments = [];
 
     db.collection("users")
@@ -467,7 +461,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className={classes.divv}>
+    <div>
       <Navigation />
       <Card className={classes.root}>
         <Card className={classes.uploadcard}>
@@ -593,10 +587,7 @@ export default function Dashboard() {
                     {post.comments.map((comment) => (
                       <React.Fragment>
                         <Grid container className={classes.txtAdd}>
-                          <Typography
-                            className={classes.txtAdd}
-                            component={Button}
-                          >
+                          <Typography className={classes.txtAdd}>
                             {comment.username}: {comment.user_comment}
                           </Typography>
                         </Grid>
