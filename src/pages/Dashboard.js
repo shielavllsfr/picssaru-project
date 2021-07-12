@@ -179,7 +179,6 @@ export default function Dashboard() {
   };
 
   const uploadHandler = () => {
-    console.log(image);
     let file = image;
     var storage = firebase.storage();
     var storageRef = storage.ref();
@@ -199,8 +198,6 @@ export default function Dashboard() {
       },
       () => {
         uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-          console.log(url);
-
           db.collection("users")
             .doc(firebase.auth().currentUser.uid)
             .collection("user_post")
@@ -215,14 +212,13 @@ export default function Dashboard() {
                 .doc(firebase.auth().currentUser.uid)
                 .set({ exists: "yes" })
                 .then(() => {
-                  console.log("asd");
                   window.location.reload();
                 });
 
               handleClose();
             })
             .catch((error) => {
-              console.log(error);
+              //error
             });
         });
       }
@@ -315,7 +311,6 @@ export default function Dashboard() {
   };
 
   const hidePostHandler = () => {
-    console.log(postRef);
     handleContextClose();
     postRef.style.display = "none";
   };
@@ -385,7 +380,6 @@ export default function Dashboard() {
       .then((doc) => {
         doc.forEach((post) => {
           if (postCard.id === post.data().postId) {
-            console.log("matched on " + post.data().postId);
             favButton.checked = true;
             postCard.children[2].firstChild.firstChild.lastChild.firstChild.attributes[0].value =
               favLikedIcon;
@@ -401,7 +395,6 @@ export default function Dashboard() {
   });
 
   const addTask = (event) => {
-    console.log(userPost.post_data);
     const postId =
       event.target.parentElement.parentElement.parentElement.parentElement
         .parentElement.parentElement.parentElement;
@@ -428,7 +421,6 @@ export default function Dashboard() {
         username: profile.username,
       })
       .then((docRef) => {
-        console.log("saved");
         commentInputRef.value = "";
 
         for (let i = 0; i < commentContainerRef.children.length; i++) {
@@ -448,7 +440,6 @@ export default function Dashboard() {
             {payload.task}
           </Typography>
         );
-        console.log("aa");
         reactDom.render(postComments, commentContainerRef);
       })
       .catch((error) => {

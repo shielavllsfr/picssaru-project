@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import firebase from "./utils/firebase";
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
