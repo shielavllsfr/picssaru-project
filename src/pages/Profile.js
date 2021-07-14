@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import firebase from "../utils/firebase";
 import reactDom from "react-dom";
 import Navigation from "../components/Navigation";
-import ImportImage from "../img/ImportImage";
 
 import {
   makeStyles,
