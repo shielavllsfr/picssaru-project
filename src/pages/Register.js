@@ -157,7 +157,7 @@ export default function Register() {
           <TextField
             className={classes.fields}
             id="username"
-            label="username"
+            label="Username"
             variant="outlined"
             value={values.username}
             onChange={handleChange("username")}

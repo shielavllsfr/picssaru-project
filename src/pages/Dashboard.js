@@ -72,11 +72,12 @@ export default function Dashboard() {
       boxShadow: "none",
     },
     modal: {
+      marginTop: "-3rem !important",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      maxHeight: "107%",
-      minHeight: "107%",
+      maxHeight: "120%",
+      minHeight: "120%",
     },
     paper: {
       backgroundColor: theme.palette.background.paper,
@@ -89,8 +90,8 @@ export default function Dashboard() {
       minHeight: "60%",
     },
     uploadImages: {
-      minWidth: "60%",
-      maxWidth: "60%",
+      minWidth: "50%",
+      maxWidth: "50%",
       marginBottom: "2%",
       marginTop: "2%",
     },
@@ -99,8 +100,9 @@ export default function Dashboard() {
       paddingTop: "56.25%",
     },
     upload: {
-      height: "70%",
-      width: "80%",
+      height: 300,
+      width: "100%",
+      objectFit: "cover",
     },
     box: {
       backgroundColor: "white",
@@ -113,7 +115,7 @@ export default function Dashboard() {
     },
     but: {
       marginBottom: "2rem !important",
-      marginLeft: "21rem !important",
+      marginLeft: "17rem !important",
     },
     cardComment: {
       alignItems: "left",
@@ -132,19 +134,25 @@ export default function Dashboard() {
     },
     comAdd: {
       marginTop: "1.25rem !important",
-      width: "650px",
+      width: "540px",
+      fontSize: "13px",
     },
     comAdd1: {
       marginTop: ".70rem !important",
-      width: "95px",
+      width: "70px",
       height: "55px",
+      fontSize: "13px",
     },
     uploadcard: {
       marginTop: "1.70rem !important",
-      width: "805px",
+      width: "50%",
       justifyContent: "center",
       alignItems: "center",
       marginBottom: "1.70rem !important",
+    },
+    tyy: {
+      marginTop: "-.1rem !important",
+      marginBottom: "-.90rem !important",
     },
   }));
 
@@ -198,21 +206,26 @@ export default function Dashboard() {
       },
       () => {
         uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-          db.collection("users")
-            .doc(firebase.auth().currentUser.uid)
-            .collection("user_post")
+          db.collection("user_post")
             .add({
               imageURL: url,
               caption: caption,
               imageName: file.lastModified,
               created_at: new Date(),
+              post_owner_id: firebase.auth().currentUser.uid,
             })
-            .then(() => {
+            .then((res) => {
               db.collection("users")
                 .doc(firebase.auth().currentUser.uid)
                 .set({ exists: "yes" })
                 .then(() => {
-                  window.location.reload();
+                  db.collection("users")
+                    .doc(firebase.auth().currentUser.uid)
+                    .collection("owned_posts")
+                    .add({ post_id: res.id })
+                    .then(() => {
+                      window.location.reload();
+                    });
                 });
 
               handleClose();
@@ -233,33 +246,30 @@ export default function Dashboard() {
     const fetchData = () => {
       let user_post = [];
       setCaption("");
-      db.collection("users").onSnapshot((users) => {
-        users.forEach((user) => {
-          db.collection("users")
-            .doc(user.id)
-            .collection("user_post")
-            .orderBy("created_at", "desc")
-            .onSnapshot((doc) => {
-              doc.forEach((post) => {
-                let post_comment = [];
 
-                db.collection("users")
-                  .doc(user.id)
-                  .collection("user_post")
-                  .doc(post.id)
-                  .collection("comments")
-                  .orderBy("created_at", "asc")
-                  .get()
-                  .then((comments) => {
-                    comments.forEach((comment) => {
-                      post_comment.push({
-                        user_comment: comment.data().comment,
-                        username: comment.data().username,
-                      });
-                    });
+      db.collection("user_post")
+        .orderBy("created_at", "desc")
+        .onSnapshot((doc) => {
+          console.log(doc);
+          doc.forEach((post) => {
+            let post_comment = [];
+
+            db.collection("user_post")
+              .doc(post.id)
+              .collection("comments")
+              .orderBy("created_at", "asc")
+              .get()
+              .then((comments) => {
+                comments.forEach((comment) => {
+                  post_comment.push({
+                    user_comment: comment.data().comment,
+                    username: comment.data().username,
                   });
+                });
+              })
+              .then(() => {
                 db.collection("users")
-                  .doc(user.id)
+                  .doc(post.data().post_owner_id)
                   .collection("profile_info")
                   .onSnapshot((profiles) => {
                     profiles.forEach((profile) => {
@@ -268,16 +278,15 @@ export default function Dashboard() {
                         id: post.id,
                         username: profile.data().info_changes.username,
                         profileURL: profile.data().info_changes.profileURL,
-                        user_id: user.id,
                         comments: post_comment,
                       });
                     });
                     setPost({ post_data: user_post });
                   });
               });
-            });
+          });
         });
-      });
+
       const currentUser = firebase.auth().currentUser;
 
       db.collection("users")
@@ -322,11 +331,7 @@ export default function Dashboard() {
       event.target.parentElement.parentElement.parentElement.parentElement
         .firstChild.id;
 
-    const postCollection = firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .collection("user_post");
+    const postCollection = firebase.firestore().collection("user_post");
 
     const likedCollection = firebase
       .firestore()
@@ -398,7 +403,6 @@ export default function Dashboard() {
     const postId =
       event.target.parentElement.parentElement.parentElement.parentElement
         .parentElement.parentElement.parentElement;
-    const userId = postId.firstChild;
     const commentInputRef =
       event.target.parentElement.parentElement.parentElement.firstChild
         .lastChild.firstChild;
@@ -407,40 +411,37 @@ export default function Dashboard() {
         .firstChild;
 
     let postComments = [];
-
-    db.collection("users")
-      .doc(userId.id)
-      .collection("user_post")
+    db.collection("user_post")
       .doc(postId.id)
       .collection("comments")
       .add({
         comment: payload.task,
         created_at: new Date(),
         postId: postId.id,
-        userId: userId.id,
+        userId: firebase.auth().currentUser.uid,
         username: profile.username,
       })
       .then((docRef) => {
         commentInputRef.value = "";
 
-        for (let i = 0; i < commentContainerRef.children.length; i++) {
-          const newComment = (
-            <Typography variant="h6" component={Button}>
-              {
-                commentContainerRef.children[i].firstChild.firstChild
-                  .textContent
-              }
-            </Typography>
-          );
-          postComments.push(newComment);
-        }
-
-        postComments.push(
-          <Typography variant="h6" component={Button}>
-            {payload.task}
-          </Typography>
-        );
-        reactDom.render(postComments, commentContainerRef);
+        db.collection("user_post")
+          .doc(postId.id)
+          .collection("comments")
+          .orderBy("created_at")
+          .get()
+          .then((comments) => {
+            comments.forEach((comment) => {
+              const commentObj = (
+                <Typography className={classes.txtAdd}>
+                  {comment.data().username}: {comment.data().comment}
+                </Typography>
+              );
+              postComments.push(commentObj);
+              console.log("profile");
+            });
+            console.log(postComments);
+            reactDom.render(postComments, commentContainerRef);
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -484,7 +485,9 @@ export default function Dashboard() {
         >
           <Fade in={open}>
             <div className={classes.paper}>
-              <h2 id="transition-modal-title">Create New Post</h2>
+              <h2 id="transition-modal-title" className={classes.tyy}>
+                Create New Post
+              </h2>
               <p id="transition-modal-description"></p>
               <Grid>
                 <IconButton variant="contained" component="label">
@@ -493,8 +496,12 @@ export default function Dashboard() {
                 </IconButton>
               </Grid>
 
-              <Grid className={classes.box}>
-                <img src={path} alt="image" className={classes.upload} />
+              <Grid>
+                <Card className={classes.box}>
+                  <CardContent>
+                    <img src={path} alt="image" className={classes.upload} />
+                  </CardContent>
+                </Card>
               </Grid>
 
               <Grid>
@@ -525,7 +532,7 @@ export default function Dashboard() {
             onLoad={setFavState}
           >
             <CardHeader
-              id={post.user_id}
+              id={post.post_owner_id}
               avatar={
                 <Avatar
                   className={classes.avatar}

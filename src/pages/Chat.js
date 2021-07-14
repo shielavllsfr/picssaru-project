@@ -71,7 +71,6 @@ export default function Chat() {
   useEffect(() => {
     db.collection("message")
       .orderBy("createdAt")
-      .limit(50)
       .onSnapshot((snapshot) => {
         setMessage(snapshot.docs.map((doc) => doc.data()));
       });

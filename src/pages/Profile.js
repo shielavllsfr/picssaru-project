@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import firebase from "../utils/firebase";
 import reactDom from "react-dom";
 import Navigation from "../components/Navigation";
+import ImportImage from "../img/ImportImage";
 
 import {
   makeStyles,
@@ -29,9 +30,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     border: "none",
     boxShadow: "none",
-  },
-  divv: {
-    height: "100vh",
   },
   postMargin: {
     marginRight: "2%",
@@ -103,6 +101,7 @@ export default function Album() {
     imageName: "",
     caption: "",
     id: "",
+    userData: "",
   });
 
   const [user, setUser] = useState();
@@ -128,33 +127,44 @@ export default function Album() {
     const fetchData = () => {
       const currentUser = firebase.auth().currentUser;
       setUser(firebase.auth().currentUser.uid);
-
       let postArray = [];
-
       db.collection("users")
         .doc(currentUser.uid)
-        .collection("user_post")
+        .collection("owned_posts")
         .get()
         .then((doc) => {
           doc.forEach((post) => {
-            const image = (
-              <img
-                id={post.id}
-                name={post.data().caption}
-                className={classes.postMargin}
-                onClick={handleImageClick}
-                key={post.id}
-                src={post.data().imageURL}
-                alt={[post.data().imageName]}
-                height="300px"
-                width="300px"
-              />
-            );
-            postArray.push(image);
+            console.log(post);
+            db.collection("user_post")
+              .doc(post.data().post_id)
+              .get()
+              .then((userPost) => {
+                const image = (
+                  <img
+                    id={userPost.id}
+                    for={post.id}
+                    name={userPost.data().caption}
+                    className={classes.postMargin}
+                    onClick={handleImageClick}
+                    key={userPost.id}
+                    src={userPost.data().imageURL}
+                    alt={[userPost.data().imageName]}
+                    height="300px"
+                    width="300px"
+                  />
+                );
+
+                postArray.push(image);
+
+                //checks if the created post object/s are the same number as the size returned by the doc variable.
+                //if true, it means all the post that was registered to the user now has an object and ready to be rendred
+                if (postArray.length === doc.size) {
+                  console.log(postArray);
+                  reactDom.render(postArray, imgContainer.current);
+                  console.log("post rendered");
+                }
+              });
           });
-          console.log(postArray);
-          reactDom.render(postArray, imgContainer.current);
-          console.log("post rendered");
         });
 
       db.collection("users")
@@ -181,6 +191,7 @@ export default function Album() {
       imageName: event.currentTarget.alt,
       caption: event.currentTarget.name,
       id: event.currentTarget.id,
+      userData: event.currentTarget.attributes[1].value,
     });
     setViewState(true);
     setCaptionValue(event.currentTarget.name);
@@ -212,24 +223,30 @@ export default function Album() {
       //delete
       console.log("delete post");
       firestore
-        .collection("users")
-        .doc(user)
         .collection("user_post")
         .doc(user_post.id)
         .delete()
         .then(() => {
-          handleClose();
-          storage
-            .ref()
-            .child("folder/" + user + " post/" + user_post.imageName)
+          firestore
+            .collection("users")
+            .doc(user)
+            .collection("owned_posts")
+            .doc(user_post.userData)
             .delete()
             .then(() => {
-              document.getElementById(user_post.id).style.display = "none";
-              console.log("deleted");
+              handleClose();
+              storage
+                .ref()
+                .child("folder/" + user + " post/" + user_post.imageName)
+                .delete()
+                .then(() => {
+                  document.getElementById(user_post.id).style.display = "none";
+                  console.log("deleted");
+                });
+            })
+            .catch((err) => {
+              console.log(err);
             });
-        })
-        .catch((err) => {
-          console.log(err);
         });
     } else if (event.target.id === "edit") {
       //edit
@@ -263,9 +280,7 @@ export default function Album() {
 
     user_post.caption = captionValue;
 
-    db.collection("users")
-      .doc(user)
-      .collection("user_post")
+    db.collection("user_post")
       .doc(user_post.id)
       .update({ caption: captionValue })
       .then((res) => {
@@ -292,12 +307,9 @@ export default function Album() {
                 </Typography>
               </Grid>
               <Grid>
-                <Grid>
-                  <Typography className={classes.uname}>
-                    {user1.email}
-                  </Typography>
-                </Grid>
-                <Grid></Grid>
+                <Typography>{user1.email}</Typography>
+              </Grid>
+              <Grid>
                 <Typography style={{ marginTop: "2%", maxWidth: "50%" }}>
                   {profile.bio}
                 </Typography>

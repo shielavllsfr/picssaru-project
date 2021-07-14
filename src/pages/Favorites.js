@@ -175,6 +175,7 @@ export default function Album() {
           });
         });
       });
+    console.log(IDs[1]);
     console.log(event.currentTarget.id.split(" "));
     setFavState(true);
     setPostId(IDs[0]);
